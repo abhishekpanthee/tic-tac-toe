@@ -56,3 +56,4 @@ who_wins_(){
 		main_ "@"
 	fi
 }
+# player funcationality remianing 
