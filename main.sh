@@ -26,4 +26,18 @@ for (( guess_count=1; guess_count<=${max_guess:-6}; guess_count++ )); do
     for ((i=0; i<5; i++)); do
         [[ "${actual:$i:1}" != "${guess:$i:1}" ]] && remaining+=${actual:$i:1}
     done
-    
+    for ((i=0; i<5; i++)); do
+        if [[ "${actual:$i:1}" != "${guess:$i:1}" ]]; then
+            if [[ "${remaining}" == *"${guess:$i:1}"* ]]; then
+                output+="${yellow} ${guess:$i:1} ${reset}"
+                remaining=${remaining/"${guess:$i:1}"/}
+            else
+                output+="${white} ${guess:$i:1} ${reset}"
+            fi
+        else
+            output+="${green} ${guess:$i:1} ${reset}"
+        fi
+    done
+    printf -- '%b\n' "${output}"; guess=""
+done
+printf -- '%s\n' "You lose!  The word is:" "${actual}"; exit 1
