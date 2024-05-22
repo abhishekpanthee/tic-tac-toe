@@ -1,43 +1,123 @@
 #!/bin/bash
-command -v curl >/dev/null 2>&1 || exit 1
-green='\033[30;102m'; yellow='\033[30;103m'; white='\033[30;107m'; reset='\033[0m'
-wordle_dir="${XDG_DATA_HOME:-$HOME/.local/share}/wordle"
-mkdir -p "${wordle_dir}" || exit 1
-dict="https://gist.githubusercontent.com/prichey/95db6bdef37482ba3f6eb7b4dec99101/raw/"
-if [[ ! -f "${wordle_dir}/wordles" ]]; then
-  curl -s "${dict}" | tr '[:lower:]' '[:upper:]' > "${wordle_dir}/wordles"
-fi
-mapfile -t words < "${wordle_dir}/wordles" || exit 1
-actual=${words[$((RANDOM % ${#words[@]}))]}
-[[ $1 == "unlimit" ]] && max_guess=999999
-for (( guess_count=1; guess_count<=${max_guess:-6}; guess_count++ )); do
-    until [[ " ${words[*]} " =~ " ${guess^^} " ]]; do
-      printf -- '%s\n' "Please enter a valid 5 letter word..."
-      read -rp "Enter your guess (${guess_count} / ${max_guess:-6}): " guess
-    done
-    guess="${guess^^}"; output=""; remaining=""
-    if [[ "${actual}" == "${guess}" ]]; then
-        printf -- '%s\n' "You guessed right!"
-        for ((i=0; i<5; i++)); do
-            output+="${green} ${guess:$i:1} ${reset}"
-        done
-        printf -- '%b\n' "${output}"; exit 0
-    fi
-    for ((i=0; i<5; i++)); do
-        [[ "${actual:$i:1}" != "${guess:$i:1}" ]] && remaining+=${actual:$i:1}
-    done
-    for ((i=0; i<5; i++)); do
-        if [[ "${actual:$i:1}" != "${guess:$i:1}" ]]; then
-            if [[ "${remaining}" == *"${guess:$i:1}"* ]]; then
-                output+="${yellow} ${guess:$i:1} ${reset}"
-                remaining=${remaining/"${guess:$i:1}"/}
-            else
-                output+="${white} ${guess:$i:1} ${reset}"
-            fi
-        else
-            output+="${green} ${guess:$i:1} ${reset}"
-        fi
-    done
-    printf -- '%b\n' "${output}"; guess=""
+
+#The real trick to emulate 2-d array is associative array, wherein string '1,2' becomes the index of array - matrix[1,2]
+declare -A matrix
+
+rows=3
+cols=3
+
+function print_matrix(){
+   for ((i=0; i<rows; i++ )) do
+       echo
+       for (( j=0; j<cols; j++ )) do
+	   if [ "${matrix[$i,$j]}" = "1" ]; then
+		   printf "%5s" "x"
+	   elif [ "${matrix[$i,$j]}" = "0" ]; then
+		   printf "%5s" "o"
+           else
+           	   printf "%5s" "${matrix[$i,$j]}"
+           fi
+       done
+   done
+   echo
+}
+
+#Check if either player is winner or the game is draw
+function check_gameover(){
+
+   flag=0
+   for((i=0; i<rows; i++)){
+        if [[ ${matrix[$i,0]} != -1 && ${matrix[$i,0]} == ${matrix[$i,1]} && ${matrix[$i,0]} == ${matrix[$i,2]} ]]; then
+		flag=1
+	fi
+   }
+   
+   for((j=0; j<cols; j++)){
+        if [[ ${matrix[0,$j]} != -1 && ${matrix[0,$j]} == ${matrix[1,$j]} && ${matrix[0,$j]} == ${matrix[2,$j]} ]]; then
+                flag=1
+        fi	
+   }
+
+   if [[ ${matrix[0,0]} != -1 && ${matrix[0,0]} == ${matrix[1,1]} && ${matrix[0,0]} == ${matrix[2,2]} ]]; then
+	flag=1
+   fi
+
+   if [[ ${matrix[0,2]} != -1 && ${matrix[0,2]} == ${matrix[1,1]} && ${matrix[0,2]} == ${matrix[2,0]} ]]; then
+        flag=1
+   fi
+
+   if [ "$flag" == "1" ]; then
+	echo "Game over!!!!"
+	exit 0
+   fi
+
+   draw=1
+   for ((i=0; i<rows; i++ )) do
+      for (( j=0; j<cols; j++ )) do
+         if [ ${matrix[$i,$j]} == -1 ]; then
+             draw=0
+         fi
+      done
+   done
+
+   if [ "$draw" == "1" ]; then
+       echo "It's draw!!!"
+       exit 0
+   fi
+
+}
+
+#Initialize the matrix with -1 to indicate empty positions
+for ((i=0; i<rows; i++ )) do
+   for (( j=0; j<cols; j++ )) do
+      matrix[$i,$j]=-1
+   done
 done
-printf -- '%s\n' "You lose!  The word is:" "${actual}"; exit 1
+
+echo "Initial state : "
+print_matrix
+echo
+echo "Note : -1 means the position is still empty."
+echo
+echo "Game begins now..."
+echo
+
+while true;
+do
+    while true;
+    do
+
+	echo -n "1st player (row column): "
+	read x y
+
+        if [ ${matrix[$x,$y]} == -1 ]; then 
+	    matrix[$x,$y]=0 
+            break 
+        fi
+    
+        echo "Position already filled!! Re-enter valid position."
+    done
+
+    print_matrix
+    echo
+    check_gameover
+
+    while true;
+    do
+
+    	echo -n "2nd player (row column): "
+    	read x y
+
+    	if [ ${matrix[$x,$y]} == -1 ]; then
+            matrix[$x,$y]=1
+            break
+    	fi
+
+    	echo "Position already filled!! Re-enter valid position."
+    done
+
+    print_matrix
+    echo
+    check_gameover
+
+done
