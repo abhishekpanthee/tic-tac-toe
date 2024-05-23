@@ -3,82 +3,82 @@
 
 This is a simple Tic-Tac-Toe game implemented in Bash.
 
-## Overview
+# Overview
 
 This Bash script allows two players to play a game of Tic-Tac-Toe in the terminal. Players take turns to place their respective markers ('x' and 'o') on a 3x3 grid. The game ends when one player wins by forming a horizontal, vertical, or diagonal line of their marker, or when the grid is full resulting in a draw.
 
 ![Tic-Tac-Toe](https://via.placeholder.com/300x200)
 
-## Authors
+# Authors
 
 - [Abhishek Panthee](https://www.github.com/abhishekpanthee)
 
-## Badges
+# Badges
 
 [![MIT License](https://img.shields.io/badge/License-MIT-green.svg)](https://choosealicense.com/licenses/mit/)
 
-## Contributing
+# Contributing
 
 Contributions are always welcome!
 
 Please adhere to this project's `code of conduct`.
 
-## Feedback
+# Feedback
 
 If you have any feedback, please reach out to us at info@abhishekpanthee.com.np
 
-## Run in Linux
+# Run in Linux
 
-# Clone the project
+## Clone the project
 
 ```bash
 git clone https://github.com/abhishekpanthee/tic-tac-toe.git
 ```
-# Go to the project directory
+## Go to the project directory
 
 ```
 cd tic-tac-toe
 ```
 
-# Run the script
+## Run the script
 ```
 ./main.sh
  ```
-## Run in Windows
+# Run in Windows
 
-# Clone the project
+## Clone the project
 
 ```
 git clone https://github.com/abhishekpanthee/tic-tac-toe.git
 ```
 
-#Go to the project directory
+## Go to the project directory
 ```
 cd tic-tac-toe
 ```
-# Run the script using Git Bash or WSL
+## Run the script using Git Bash or WSL
 
 ```
 ./main.sh
 ```
 
-## Run in Mac
+# Run in Mac
 
-# Clone the project
+## Clone the project
 ```
 git clone https://github.com/your/repository.git
 ```
-# Go to the project directory
+## Go to the project directory
 ```
 cd tic-tac-toe
 ```
-# Run the script
+## Run the script
 ```
 ./main.sh
 ```
-## License
+# License
 
-#MIT License
+## MIT License
 
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -98,7 +98,7 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
-## Documentation
+# Documentation
 For more details, refer to the Documentation.
 
 <h3 align="left">Support:</h3>
